@@ -40,13 +40,13 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, token)
 }
 
-func (server *Server) SignIn(email, password string) (string, error) {
+func (server *Server) SignIn(username, password string) (string, error) {
 
 	var err error
 
 	user := models.User{}
 
-	err = server.DB.Debug().Model(models.User{}).Where("email = ?", email).Take(&user).Error
+	err = server.DB.Debug().Model(models.User{}).Where("username = ?", username).Take(&user).Error
 	if err != nil {
 		return "", err
 	}

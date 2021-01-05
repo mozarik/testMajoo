@@ -56,13 +56,13 @@ func (u *User) Validasi(action string) error {
 			return errors.New("Butuh Password")
 		}
 		if u.Username == "" {
-			return errors.New("Butuh Email")
+			return errors.New("Butuh Username")
 		}
 		return nil
 
 	default:
 		if u.Username == "" {
-			return errors.New("Butuh Email")
+			return errors.New("Butuh Username")
 		}
 		if u.Password == "" {
 			return errors.New("Required Password")
