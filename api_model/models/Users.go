@@ -30,7 +30,7 @@ func (u *User) BeforeSave() error {
 	return nil
 }
 
-func (u *User) testPrep() {
+func (u *User) Prep() {
 	u.ID = 0
 	u.Username = html.EscapeString(strings.TrimSpace(u.Username))
 	u.NamaLengkap = html.EscapeString(strings.TrimSpace(u.NamaLengkap))
@@ -73,8 +73,7 @@ func (u *User) Validasi(action string) error {
 
 func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 
-	var err error
-	err = db.Debug().Create(&u).Error
+	err := db.Debug().Create(&u).Error
 	if err != nil {
 		return &User{}, err
 	}
@@ -82,9 +81,9 @@ func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 }
 
 func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
-	var err error
+
 	users := []User{}
-	err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
+	err := db.Debug().Model(&User{}).Limit(100).Find(&users).Error
 	if err != nil {
 		return &[]User{}, err
 	}
@@ -92,8 +91,8 @@ func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 }
 
 func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
-	var err error
-	err = db.Debug().Model(User{}).Where("id = ?", uid).Take(&u).Error
+
+	err := db.Debug().Model(User{}).Where("id = ?", uid).Take(&u).Error
 	if err != nil {
 		return &User{}, err
 	}
@@ -139,7 +138,7 @@ func (u *User) DeleteAUser(db *gorm.DB, uid uint32) (int64, error) {
 }
 
 func Hash(password string) ([]byte, error) {
-	return bcrypt.GenerateFromPassword([]btye(password), bcrypt.DefaultCost)
+	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 
 func VerifyPassword(passwordHash, password string) error {
