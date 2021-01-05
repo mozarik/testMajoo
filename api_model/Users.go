@@ -5,9 +5,9 @@ import (
 	"html"
 	"log"
 	"strings"
-	"time"
 
 	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type (
@@ -19,6 +19,7 @@ type (
 	}
 )
 
+// TODO Implement Has()
 func (u *User) BeforeSave() error {
 	passowordHashed, err := Hash(u.Password)
 	if err != nil {
@@ -111,10 +112,9 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	}
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
-			"password":  u.Password,
-			"nickname":  u.Nickname,
-			"email":     u.Email,
-			"update_at": time.Now(),
+			"password":     u.Password,
+			"username":     u.Username,
+			"nama_lengkap": u.NamaLengkap,
 		},
 	)
 	if db.Error != nil {
@@ -136,4 +136,12 @@ func (u *User) DeleteAUser(db *gorm.DB, uid uint32) (int64, error) {
 		return 0, db.Error
 	}
 	return db.RowsAffected, nil
+}
+
+func Hash(password string) ([]byte, error) {
+	return bcrypt.GenerateFromPassword([]btye(password), bcrypt.DefaultCost)
+}
+
+func VerifyPassword(passwordHash, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(password))
 }
